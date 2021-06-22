@@ -3,7 +3,7 @@
 extend-ignore = "E501,"
 
 
-line-length = 112
+line-length = 70
 include = '\.pyi?$'
 exclude = '''
 /(

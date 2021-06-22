@@ -2,5 +2,6 @@
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
     "editor.formatOnSave": true,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.pythonPath": "/Users/sumin/opt/anaconda3/envs/api/bin/python"
 }

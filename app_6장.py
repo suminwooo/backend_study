@@ -1,11 +1,7 @@
-from datetime import timedelta
 import os
 from flask import Flask, jsonify, request, current_app
 from flask.json import JSONEncoder
 from sqlalchemy import create_engine, text
-import bcrypt
-import jwt
-import datetime
 
 
 # dict의 key에 대한 value가 set일 때, list로 변경, 그 이외에는 원래의 동작대로
@@ -120,49 +116,9 @@ def create_app(test_config=None):
     @app.route("/sign-up", methods=["POST"])
     def sign_up():
         new_user = request.json
-        new_user["password"] = bcrypt.hashpw(
-            new_user["password"].encode("UTF-8"), bcrypt.gensalt()
-        )
         new_user_id = insert_user(new_user)
-        new_user_info = get_user(new_user_id)
-        return jsonify(new_user_info)
-
-    @app.route("/login", methods=["POST"])
-    def login():
-        credential = request.json
-        email = credential["email"]
-        password = credential["password"]
-
-        row = database.execute(
-            text(
-                """
-            SELECT 
-                id,
-                hashed_password
-            FROM users
-            WHERE email=:email
-        """
-            ),
-            {"email": email},
-        ).fetchone()
-
-        if row and bcrypt.checkpw(
-            password.encode("UTF-8"),
-            row["hashed_password"].encode("UTF-8"),
-        ):
-            user_id = row["id"]
-            payload = {
-                "user_id": user_id,
-                "exp": datetime.utcnow()
-                + timedelta(seconds=60 * 60 * 24),
-            }
-            token = jwt.encode(
-                payload, app.config["JWT_SECRET_KEY"], "HS256"
-            )
-
-            return jsonify({"access_token": token.decode("UTF-8")})
-        else:
-            return "", 401
+        new_user = get_user(new_user_id)
+        return jsonify(new_user)
 
     @app.route("/tweet", methods=["POST"])
     def tweet():
